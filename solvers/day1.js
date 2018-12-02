@@ -12,6 +12,13 @@ exports.solver = function(input) {
     i = (i + 1) % changes.length;
   }
 
+  /*let a = 0;
+  let l = 10;
+  for(let b = 0; b < 100; b++) {
+    console.log(a);
+    a = ++a < l ? a : 0;  // FUUUN!
+  }*/
+
   return `The final frequency is ${resultingFrequency}.
 When looping, the first double frequency is ${runningFreq}.`;
 }
