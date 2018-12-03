@@ -44,7 +44,7 @@ wvxyz`;*/
       let b = ids[j];
       let differingLetters = 0;
       let lastMisMatch = 0;
-      for(let l = 0; l < a.length && l < b.length; l++) {
+      for(let l = 0; l < a.length && l < b.length && differingLetters < 2; l++) {
         if(a.charAt(l) !== b.charAt(l)) {
           differingLetters++;
           lastMisMatch = l;

@@ -7,9 +7,9 @@ exports.solver = function(input) {
   let visitedFreqs = [];
   let runningFreq = 0;
   let i = 0;
-  while(visitedFreqs.indexOf(runningFreq += changes[i]) === -1) {
+  const nChanges = changes.length;
+  while(visitedFreqs.indexOf(runningFreq += changes[i++ % nChanges]) === -1) {
     visitedFreqs.push(runningFreq);
-    i = (i + 1) % changes.length;
   }
 
   /*let a = 0;
