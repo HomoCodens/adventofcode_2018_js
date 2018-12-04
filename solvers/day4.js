@@ -51,19 +51,25 @@ exports.solver = function(input) {
     }
   }
 
-  const t_asleep = Object.keys(guardStats)
-                           .reduce((s, e) => {
-                             let out = {...s};
-                             out[e] = guardStats[e].reduce((s, e) => s + e);
-                             return out;
-                           }, {});
+  guardStats = Object.keys(guardStats).
+                      map((e) => {
+                        return {
+                          id: Number.parseInt(e),
+                          stats: guardStats[e]
+                        }
+                      });
 
-  const guardRanks = Object.keys(guardStats).
-                            sort((a, b) => t_asleep[b] - t_asleep[a]);
+  const guardsRanked = guardStats.map((e) => {
+                             return {
+                               ...e,
+                               tTot: e.stats.reduce((e, s) => s + e)
+                             };
+                          }).
+                            sort((a, b) => b.tTot - a.tTot);
 
-  const myGuard = guardRanks[0];
+  const myGuard = guardsRanked[0];
   // OK, that's taking it a bit far
-  const bestMinute = guardStats[myGuard].reduce((s, e, i) => {
+  const bestMinute = myGuard.stats.reduce((s, e, i) => {
     if(e >= s.value) {
       return {
         minute: i,
@@ -77,12 +83,12 @@ exports.solver = function(input) {
     value: -1
   }).minute;
 
-  const asleepMostOftenAt = Object.keys(guardStats).
+  const asleepMostOftenAt = guardStats.
                             reduce((s, e, i) => {
-                              const guard = guardStats[e];
+                              const {id, stats} = e;
                               for(let j = 0; j < 60; j++) {
-                                if(guard[j] > s[j].value) {
-                                  s[j] = {id: e, minute: j, value: guard[j]};
+                                if(stats[j] > s[j].value) {
+                                  s[j] = {id, minute: j, value: stats[j]};
                                 }
                               }
                               return s;
@@ -95,7 +101,7 @@ exports.solver = function(input) {
 
   const strategy2 = asleepMostOftenAt[0];
 
-  return `Guard ${myGuard} is asleep for a total of ${t_asleep[myGuard]}.
-The optimal time to sneak past him is ${bestMinute}, therefore ${myGuard*bestMinute}.
+  return `Guard ${myGuard.id} is asleep for a total of ${myGuard.tTot}.
+The optimal time to sneak past him is ${bestMinute}, therefore ${myGuard.id*bestMinute}.
 When using strategy 2 we choose ${strategy2.id} for ${strategy2.id * strategy2.minute}`;
 }
