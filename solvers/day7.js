@@ -96,7 +96,7 @@ Step F must be finished before step E can begin.`;*/
     let finishedJobs = [];
     for(let w = 0; w < nWorkers; w++) {
       if(workers[w] !== undefined) {
-        const { job, tJob: t } = workers[w];
+        const { job, t: tJob } = workers[w];
         if(tJob === instructions[job].time) {
           finishedJobs.push(job);
           workers[w] = undefined;
