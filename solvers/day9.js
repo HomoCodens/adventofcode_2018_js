@@ -1,10 +1,10 @@
 const getHighScore = (nPlayers, nMarbles) => {
   let scores = new Array(nPlayers).fill(0);
-  let marbles = new Array(nMarbles).fill(0);
+  let marbles = [0];
   let currentMarble = 0;
-  let marblesInCircle = 1;
 
   for(let m = 1; m <= nMarbles; m++) {
+    const marblesInCircle = marbles.length;
     if(m % 23 > 0) {
       currentMarble = (currentMarble + 2) % marblesInCircle;
       if(currentMarble === 0) {
@@ -12,11 +12,11 @@ const getHighScore = (nPlayers, nMarbles) => {
       }
       // Slow as f
       //marbles = [...marbles.slice(0, currentMarble), m, ...marbles.slice(currentMarble, marblesInCircle)];
-      for(let i = marblesInCircle + 1; i >= currentMarble; i--) {
+      /*for(let i = marblesInCircle + 1; i >= currentMarble; i--) {
         marbles[i] = marbles[i - 1];
       }
-      marbles[currentMarble] = m;
-      marblesInCircle++;
+      marbles[currentMarble] = m;*/
+      marbles.splice(currentMarble, 0, m);
     } else {
       console.log(`score! (${m})`);
       const scoringPlayer = (m - 1) % nPlayers;
@@ -25,11 +25,7 @@ const getHighScore = (nPlayers, nMarbles) => {
       if(currentMarble < 0) {
         currentMarble += marblesInCircle;
       }
-      scores[scoringPlayer] += marbles[currentMarble];
-      for(let i = currentMarble; i <= marblesInCircle; i++) {
-        marbles[i] = marbles[i + 1];
-      }
-      marblesInCircle--;
+      scores[scoringPlayer] += marbles.splice(currentMarble, 1)[0];
     }
   }
 
