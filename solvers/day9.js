@@ -33,12 +33,12 @@ const getHighScore = (nPlayers, nMarbles) => {
 }
 
 exports.solver = function(input) {
-  //input = '9 25'; // 32
-  //input = '10 1618'; // 8317
-  //input = '13 7999'; // 146373
-  //input = '17 1104'; // 2764
-  //input = '21 6111'; // 54718
-  //input = '30 5807'; // 37305
+  //input = '9 25'; // 32 22563
+  //input = '10 1618'; // 8317 74765078
+  //input = '13 7999'; // 146373 1406506154
+  //input = '17 1104'; // 2764 20548882
+  //input = '21 6111'; // 54718 507583214
+  //input = '30 5807'; // 37305 320997431
 
   const matches = input.match(/([0-9]+)/g);
   const nPlayers = Number.parseInt(matches[0]);
