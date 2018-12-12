@@ -9,7 +9,35 @@ const powerLevel = (x, y, gridSerialNr) => {
 }
 
 const maximumPowerSubgrid = (grid, size) => {
+  const gridDim = grid.length;
 
+  let solution = {
+    power: 0,
+    pos: [1, 1]
+  };
+
+  for(let y = 1; y <= (gridDim - size + 1); y++) {
+    for(let x = 1; x <= (gridDim - size + 1); x++) {
+      let pwr = 0;
+      for(let xx = x - 1; xx <= x + size - 2; xx++) {
+        for(let yy = y - 1; yy <= y + size - 2; yy++) {
+          //console.log(`[${xx}, ${yy}]`);
+          pwr += grid[yy][xx];
+        }
+      }
+      if(pwr > solution.power) {
+        solution = {
+          power: pwr,
+          pos: [x, y]
+        };
+      }
+    }
+  }
+
+  return {
+    ...solution,
+    size
+  };
 }
 
 exports.solver = function(input) {
@@ -30,28 +58,23 @@ exports.solver = function(input) {
     grid.push(row);
   }
 
-  let solution = {
-    power: 0,
-    pos: [1, 1]
+  const { pos: pos1, power: power1 } = maximumPowerSubgrid(grid, 3);
+
+  let solution2 = {
+    power: -Infinity
   };
 
-  for(let y = 1; y <= (gridDim - 2); y++) {
-    for(let x = 1; x <= (gridDim - 2); x++) {
-      let pwr = 0;
-      for(let xx = x - 1; xx <= x + 1; xx++) {
-        for(let yy = y - 1; yy <= y + 1; yy++) {
-          pwr += grid[yy][xx];
-        }
-      }
-      if(pwr > solution.power) {
-        solution = {
-          power: pwr,
-          pos: [x, y]
-        };
-      }
+  for(let s = 1; s <= gridDim; s++) {
+    process.stdout.write(`\rSearching w/ size ${s}...`);
+    let sol = maximumPowerSubgrid(grid, s);
+    if(sol.power > solution2.power) {
+      solution2 = sol;
     }
   }
+  process.stdout.write('\n');
 
-  const { pos, power } = solution;
-  return `The cell at [${pos[0]}, ${pos[1]}] has max power (${power}).`;
+  const { pos: pos2, power: power2, size } = solution2;
+
+  return `The cell at [${pos1[0]}, ${pos1[1]}] has max power (${power1}).
+When twiddling the knob, we get [${pos2[0]}, ${pos2[1]}], size ${size} (${power2}).`;
 }
