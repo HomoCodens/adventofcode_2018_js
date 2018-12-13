@@ -12,20 +12,20 @@ const drive = (cart) => {
   };
 }
 
-const straight = drive;
+const straight = (cart) => cart;
 
 const curveLeft = (cart) => {
   //console.log('curving left');
   let { v } = cart;
   v = [v[1], -v[0]];
-  return drive({...cart, v});
+  return {...cart, v};
 }
 
 const curveRight = (cart) => {
   //console.log('curving right');
   let { v } = cart;
   v = [-v[1], v[0]];
-  return drive({...cart, v});
+  return {...cart, v};
 }
 
 const intersection = (cart) => {
@@ -115,17 +115,10 @@ const doStep = (carts, map) => {
   let cartsWhoActed = [];
 
   for(let i = 0; i < carts.length && carts.length > 0; i++) {
-    const cart = carts[i];
+    const cart = drive(carts[i]);
     //console.log(`doing this cart at ${i}.`);
     //console.log(cart);
-    const { x, id } = cart;
-
-    // Bit of a cheat
-    if(cartsWhoActed.indexOf(id) >= 0) {
-      continue;
-    }
-
-    //cartsWhoActed.push(id);
+    const { x } = cart;
 
     carts[i] = applyTrack(cart, map[x[1]][x[0]]);
     let coll = findCollision(carts);
@@ -199,13 +192,13 @@ exports.solver = function(input) {
   //input = '/-<>-\\\n|    |\n|    |\n\\-->-/';
 
   // example p2
-  input = `/>-<\\
+  /*input = `/>-<\\
 |   |
 | /<+-\\
 | | | v
 \\>+</ |
   |   ^
-  \\<->/`;
+  \\<->/`;*/
 
   // insanity
   //input = '/<--\\\n|   |\n|   ^\n\\---/';
