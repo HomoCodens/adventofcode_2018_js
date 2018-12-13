@@ -112,8 +112,6 @@ const doStep = (carts, map) => {
   let collision = false;
   let collisionAt = [];
 
-  let cartsWhoActed = [];
-
   for(let i = 0; i < carts.length && carts.length > 0; i++) {
     const cart = drive(carts[i]);
     //console.log(`doing this cart at ${i}.`);
@@ -152,7 +150,7 @@ const doStep = (carts, map) => {
   };
 }
 
-const render = (carts, map) => {
+const render = (carts, collisions, map) => {
   return map.map((r, i) => {
     let nr = [...r];
     for(let c = 0; c < carts.length; c++) {
@@ -173,6 +171,15 @@ const render = (carts, map) => {
         }
       }
     }
+
+    if(collisions) {
+      for(let c = 0; c < collisions.length; c++) {
+        if(collisions[c][1] === i) {
+          nr[collisions[c][0]] = 'X';
+        }
+      }
+    }
+
     return nr.join('');
   }).join('\n');
 }
@@ -192,13 +199,13 @@ exports.solver = function(input) {
   //input = '/-<>-\\\n|    |\n|    |\n\\-->-/';
 
   // example p2
-  /*input = `/>-<\\
+  input = `/>-<\\
 |   |
 | /<+-\\
 | | | v
 \\>+</ |
   |   ^
-  \\<->/`;*/
+  \\<->/`;
 
   // insanity
   //input = '/<--\\\n|   |\n|   ^\n\\---/';
@@ -221,7 +228,7 @@ exports.solver = function(input) {
   //console.log(carts);
   /*console.log(map);
   console.log(findCollision(carts));*/
-  console.log(render(carts, map));
+  console.log(render(carts, [], map));
 
   let coll = null;
   let step = 0;
@@ -234,7 +241,7 @@ exports.solver = function(input) {
     console.log(`Step: ${step}, surviving carts: ${carts.length}.`);
     const nextState = doStep(carts, map);
     carts = nextState.carts;
-    map.length <= 20 && console.log(render(carts, map));
+    map.length <= 20 && console.log(render(carts, nextState.collisionAt, map));
     if(nextState.collision && firstCollision === null) {
       firstCollision = nextState.collisionAt[0];
     }
