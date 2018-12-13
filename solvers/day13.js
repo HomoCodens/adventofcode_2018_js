@@ -199,13 +199,13 @@ exports.solver = function(input) {
   //input = '/-<>-\\\n|    |\n|    |\n\\-->-/';
 
   // example p2
-  input = `/>-<\\
+  /*input = `/>-<\\
 |   |
 | /<+-\\
 | | | v
 \\>+</ |
   |   ^
-  \\<->/`;
+  \\<->/`;*/
 
   // insanity
   //input = '/<--\\\n|   |\n|   ^\n\\---/';
