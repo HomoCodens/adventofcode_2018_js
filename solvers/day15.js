@@ -59,7 +59,7 @@ BeverageBandits.prototype.allNeighbors = function(x, y) {
 }
 
 BeverageBandits.prototype.adjacentReachables = function(x, y) {
-  return this.allNeighbors(x, y).filter((e) => e.type === OPENSPACE || e.ded);
+  return this.allNeighbors(x, y).filter((e) => this.cellPassable(e.x, e.y));
 }
 
 BeverageBandits.prototype.adjacentEnemies = function(x, y, faction) {
@@ -78,13 +78,13 @@ BeverageBandits.prototype.cellPassable = function(x, y) {
   }
 
   for(let i = 0; i < this.elves.length; i++) {
-    if(!this.elves.ded && this.elves[i].x === x && this.elves[i].y === y) {
+    if(!this.elves[i].ded && this.elves[i].x === x && this.elves[i].y === y) {
       return false;
     }
   }
 
   for(let i = 0; i < this.goblins.length; i++) {
-    if(!this.goblins.ded && this.goblins[i].x === x && this.goblins[i].y === y) {
+    if(!this.goblins[i].ded && this.goblins[i].x === x && this.goblins[i].y === y) {
       return false;
     }
   }
@@ -127,6 +127,7 @@ BeverageBandits.prototype.runToCompletion = function(renderOutput = false) {
     this.simulationStep()
 
     if(renderOutput) {
+      //process.stdout.write('\033c');
       console.log();
       console.log(this.step);
       console.log(this.render());
@@ -311,7 +312,8 @@ const findTargetPosition = (agent, board) => {
           if(type === enemyFaction && !neighbor.ded) {
             //console.log('yay, enemy');
             candidateEnemies.push(neighbor);
-          } else if(candidateEnemies.length === 0 && (type == OPENSPACE || neighbor.ded)) {
+          } else if(candidateEnemies.length === 0 &&
+                      board.cellPassable(neighbor.x, neighbor.y)) {
             let okToPush = true;
             for(let e = 0; e < newEdge.length; e++) {
               if(newEdge[e].x === neighbor.x && newEdge[e].y === neighbor.y) {
@@ -380,7 +382,8 @@ const pathFind = (agent, board) => {
           const { type } = neighbor;
           if(neighbor.x === agent.x && neighbor.y === agent.y) {
             candidateSpaces.push(node);
-          } else if(candidateSpaces.length === 0 && (type === OPENSPACE || neighbor.ded)) {
+          } else if(candidateSpaces.length === 0 &&
+                    board.cellPassable(neighbor.x, neighbor.y)) {
             let okToPush = true;
             for(let e = 0; e < newEdge.length; e++) {
               if(newEdge[e].x === neighbor.x && newEdge[e].y === neighbor.y) {
