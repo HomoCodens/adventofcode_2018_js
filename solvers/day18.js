@@ -97,35 +97,34 @@ exports.solver = function(input) {
   let recodring = false;
   const matchThreshold = 5;
   let prevScore = 0;
-  const nGenerations = 1000; //1000000000;
+  const nGenerations = 1000000000;
   let generation = 0;
   for(; generation < nGenerations; generation++) {
     state = step(state);
     let s = calculateScore(state);
     let d = s.score - prevScore;
+    prevScore = s.score;
 
-    console.log(render(state));
-
-    /*if(!recodring) {
+    if(!recodring) {
       diffReg.push(d);
       if(diffReg.length > matchThreshold) {
         diffReg.shift();
       }
       diffs.push(d);
 
-      console.log('diffReg');
+      /*console.log('diffReg');
       console.log(diffReg);
       console.log('diffs');
-      console.log(diffs);
+      console.log(diffs);*/
 
-      if(diffReg.length === matchThreshold && diffs.length > 2*matchThreshold) {
+      if(diffReg.length === matchThreshold && diffs.length > 3*matchThreshold) {
         let nMatches = 0;
         //console.log('looking for diffReg in diffs');
         let match = true;
         for(let i = diffs.length - 1; i >= 0; i--) {
           match = true;
           for(let ii = 0; ii < diffReg.length; ii++) {
-            console.log(`comparing: ${i}, ${ii} : ${i - ii}, ${diffReg.length - ii - 1} : ${diffs[i - ii]}, ${diffReg[diffReg.length - ii - 1]}`)
+            //console.log(`comparing: ${i}, ${ii} : ${i - ii}, ${diffReg.length - ii - 1} : ${diffs[i - ii]}, ${diffReg[diffReg.length - ii - 1]}`)
             if(diffs[i - ii] !== diffReg[diffReg.length - ii - 1]) {
               match = false;
               break;
@@ -133,12 +132,12 @@ exports.solver = function(input) {
           }
           if(match) {
             let anyNegative = false;
-            console.log('found a match');
+            //console.log('found a match');
             //for(let i = 0; i < )
             nMatches++;
-            console.log(nMatches);
-            if(nMatches == 4) {
-              console.log('switch to recodring mode');
+            //console.log(nMatches);
+            if(nMatches == 3) {
+              //console.log('switch to recodring mode');
               recodring = true;
               break;
             }
@@ -156,19 +155,24 @@ exports.solver = function(input) {
           }
         }
         if(match) {
-          // OK that's just mean:
-          // My cycling diffs have length 27 but somewhere earlier in the
-          // sequence there are two repeating patterns of length 28
-          console.log(cyclingDiffs);
+          //console.log(cyclingDiffs);
           cyclingDiffs = cyclingDiffs.splice(0, cycleLength);
-          console.log('found me some cycle');
+          //console.log('found me some cycle');
           break; // out of the main loop
         }
       }
-    }*/
+    }
   }
 
-  console.log(cyclingDiffs);
+
+  let generationsRemaining = nGenerations - generation;
+  let generationsContributing = generationsRemaining % cyclingDiffs.length;
+
+  let sol2 = calculateScore(state).score;
+  for(let i = 0; i < generationsContributing - 1; i++) {
+    sol2 += cyclingDiffs[i];
+  }
+  console.log(render(state));
 
   /*let scores = [];
   let prevScore = 0;
@@ -191,5 +195,7 @@ exports.solver = function(input) {
 
   console.log(diff);*/
 
-  return `After 10 generations, there are ${sol1.nTrees} trees, ${sol1.nLumberYards} lumber yards giving ${sol1.score}`
+  return `After 10 generations, there are ${sol1.nTrees} trees, ${sol1.nLumberYards} lumber yards giving ${sol1.score}.
+After a whopping ${nGenerations} there is still ${sol2} thingies.`;
+
 }
