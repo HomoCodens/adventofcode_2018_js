@@ -170,6 +170,56 @@ const parseProgram = (input) => {
   }
 }
 
+const getX = (instructions, ipR, reg0 = 0) => {
+  let registers = [reg0, 0, 0, 0, 0, 0];
+  let ip = 0;
+  // The actual program starts at 1 => that's when we know x
+  while(ip !== 1) {
+    registers[ipR] = ip;
+    registers = instructionSet[instructions[ip].instruction](registers, instructions[ip].registers);
+    ip = registers[ipR];
+    ip++;
+  }
+
+  return registers[4];
+}
+
+// Dear mom and dad,
+// Today I deconstructed an assembler program for the very first time.
+// It calculates the sum of the integer divisors of x (rather bluntly)
+// I mean, that's neat and all but really, what do we have high high level
+// languages for?
+const theProgramVanilla = (x) => {
+  let a = 1;
+  let i = 1;
+  let y = 0;
+  while(true) {
+    if(a*i === x) {
+      console.log('ding');
+      y += a;
+      console.log(`a: ${a}, i: ${i}, y: ${y}, x: ${x}`);
+    }
+    i++;
+    if(i > x) {
+      a++;
+      if(a > x) {
+        return y;
+      }
+      i = 1;
+    }
+  }
+}
+
+const theProgramGood = (x) => {
+  let y = 0;
+  for(let i = 1; i <= x; i++) {
+    if((x % i) === 0) {
+      y += i;
+    }
+  }
+  return y;
+}
+
 exports.solver = function(input) {
   /*input = `#ip 0
 seti 5 0 1
@@ -180,10 +230,6 @@ setr 1 0 0
 seti 8 0 4
 seti 9 0 5`;*/
   program = parseProgram(input);
-  console.log('done parsing')
-
-  console.log(program);
-  console.log(program.instructions[0].registers);
 
   let ipR = program.ip;
   let instructions = program.instructions;
@@ -193,7 +239,7 @@ seti 9 0 5`;*/
   let step = 0;
   let check = false;
 
-  while(ip < instructions.length) {
+  /*while(ip < instructions.length) {
     //console.log(ip);
     let rBefore = [...registers];
     console.log(rBefore);
@@ -217,7 +263,13 @@ seti 9 0 5`;*/
       }
     }
   }
-  console.log(registers);
+  console.log(registers);*/
+
+  let x1 = getX(program.instructions, program.ip, 0);
+  console.log(theProgramVanilla(x1));
+  let x2 = getX(program.instructions, program.ip, 1);
+  console.log(theProgramGood(x2));
+  //console.log(theProgram(10551370));
 
   /*step = 0;
   ip = 0;
@@ -239,5 +291,5 @@ seti 9 0 5`;*/
     (++step % 1000) == 0 && console.log(registers);
     (step % 1000) == 0 && console.log(step);
   }*/
-  console.log(registers);
+  //console.log(registers);
 }
