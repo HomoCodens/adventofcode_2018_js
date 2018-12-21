@@ -170,6 +170,83 @@ const parseProgram = (input) => {
   }
 }
 
+// Don't run this tho, just a sketch
+const leProgram = (x = 0) => {
+  let qq = 0;
+  let laMappa = {};
+
+  let a = 0;
+  let b = 0;
+  let c = 0;
+  let d = 0;
+  // Assert bani works with numbers
+  while(qq < 100000) {
+    c = d | 65536;
+    d = 4332021;
+    while(true) {
+      /*b = c % 256;
+      d += b;
+      d %= 16777216;
+      d *= 65899;
+      d %= 16777216;*/
+      d = (((d + (c % 256)) % 16777216)*65899) % 16777216;
+      if(c < 256) {
+        break;
+      }
+      //b = 0;
+      /*while((b + 1)*256 <= c) {
+        b++;
+      }*/
+      //c = b;
+      c = Math.floor(c/256);
+      //console.log([x, a, b, c, d, 0]);
+    }
+
+    /*if(x === d) {
+      break;
+    }*/
+    if(laMappa[d] !== undefined) {
+      console.log('cycle found!');
+      console.log(qq);
+      break;
+    } else {
+      laMappa[d] = d;
+    }
+    console.log(d);
+    qq++;
+  }
+
+  console.log([x, a, b, c, d, 0]);
+
+  /*while(d !== x) {
+    c = d | 65536;
+    d = 4332021;
+    console.log(`c: ${c}`);
+    while(c >= 256) {
+      console.log('begin anew');
+      b = c % 256;
+      d += b;
+      console.log(`d: ${d}`);
+      d %= 16777216;
+      console.log(`d: ${d}`);
+      d *= 65899;
+      console.log(`d: ${d}`);
+      d %= 16777216;
+      console.log(`d: ${d}`);
+      b = 0;
+      a = 1;
+      while(a*256 <= c) {
+        b++;
+        a++;
+      }
+      c = b;
+      console.log('done');
+      console.log([x, a, b, c, d, 0]);
+      //return;
+    }
+  }*/
+}
+
 exports.solver = function(input) {
   /*input = `#ip 0
 seti 5 0 1
@@ -184,12 +261,15 @@ seti 9 0 5`;*/
 
   console.log(program);
 
-  let ipR = program.ip;
+  leProgram();
+
+  /*let ipR = program.ip;
   let instructions = program.instructions;
   let ip = 0;
-  let registers = [0, 0, 0, 0, 0, 0];
+  let registers = [9566170, 0, 0, 0, 0, 0];
 
   let step = 0;
+  let check = 0;
 
   while(ip < instructions.length) {
     //console.log(ip);
@@ -202,13 +282,20 @@ seti 9 0 5`;*/
     registers = instructionSet[instructions[ip].instruction](registers, instructions[ip].registers);
     ip = registers[ipR];
     ip++;
+    //console.log(registers);
 
-    step++;
-    if(step === 100) {
-      break;
+    if(registers[5] == 22) {
+      check++;
+    }
+
+    if(check == 2) {
+      step++;
+      if(step == 100) {
+        break;
+      }
     }
   }
-  console.log(registers);
+  console.log(registers);*/
 
   /*step = 0;
   ip = 0;
